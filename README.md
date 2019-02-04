@@ -1,1 +1,58 @@
-# ATC-ML-CYBER
+# Computer Science 445 – Capstone Sprint 2019
+
+
+| Branch  | Status |
+| ------------- | ------------- |
+| Develop  | TODO  |
+| Master  | TODO |
+
+
+
+**Authors**
+- Igor Mekhtiev
+
+# Installation Instructions
+
+
+## Vagrant installation
+
+- Install  [Vagrant](https://www.vagrantup.com/downloads.html)
+- Ensure that [VirtualBox](http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html) or your favorite virtualization software is installed.
+
+## Starting up Vagrant box
+
+From the `<project root>/vagrant` directory and run:
+#### On windows run the command line as an Administrator
+
+```
+vagrant plugin install vagrant-cachier
+vagrant plugin install vagrant-faster
+vagrant box update
+vagrant up
+vagrant ssh
+```
+
+From vagrant machine
+```
+cd ~/source
+ls -lah
+```
+
+## Starting shut down Vagrant box
+
+From the `<project root>/vagrant` directory and run:
+```
+vagrant halt
+```
+
+## To destroy vagrant box and free up space
+
+From the `<project root>/vagrant` directory and run:
+```
+vagrant destroy
+```
+
+
+# Change log since last sprint
+
+* Created vagrant box

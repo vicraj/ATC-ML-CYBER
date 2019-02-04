@@ -1,0 +1,9 @@
+---
+
+
+# include task list in play
+- name: Install Base os
+  include_tasks: base-os.yml
+
+# - name: Install project dependencies
+#   include_tasks: project.yml

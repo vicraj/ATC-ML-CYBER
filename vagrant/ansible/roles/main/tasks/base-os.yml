@@ -1,0 +1,29 @@
+---
+
+- name: Make sure os is up to date
+  apt:
+    update_cache: yes
+    upgrade: full
+    cache_valid_time: 3600
+
+
+- name: Install a list of packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - bash-completion
+    - curl
+    - fuse
+    - vim
+    - git
+    - htop
+    - iftop
+    - iotop
+    - mc
+    - python
+    - screen
+    - sudo
+    - tree
+    - wget
+    - open-vm-tools
