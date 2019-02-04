@@ -21,9 +21,11 @@
     - iftop
     - iotop
     - mc
-    - python
+    # - python
     - screen
     - sudo
     - tree
     - wget
     - open-vm-tools
+    - python-pip
+    - python3-pip

@@ -52,6 +52,12 @@ From the `<project root>/vagrant` directory and run:
 vagrant destroy
 ```
 
+## To test tensorflow installation
+
+```
+vagrant ssh
+python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
+```
 
 # Change log since last sprint
 
