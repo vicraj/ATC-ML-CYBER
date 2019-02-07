@@ -13,3 +13,7 @@
 - pip:
     name: tensorflow
     executable: pip3
+
+- pip:
+    name: pandas
+    executable: pip3
