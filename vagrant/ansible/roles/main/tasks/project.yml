@@ -11,9 +11,13 @@
     state: present
 
 - pip:
-    name: tensorflow
+    name:
+      - tensorflow
+      - pandas
+      - matplotlib
+      - IPython
+      - sklearn
     executable: pip3
 
-- pip:
-    name: pandas
-    executable: pip3
+
+
