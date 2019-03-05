@@ -27,6 +27,7 @@ From the `<project root>/vagrant` directory and run:
 ```
 vagrant plugin install vagrant-cachier
 vagrant plugin install vagrant-faster
+vagrant plugin install vagrant-timezone
 vagrant box update
 vagrant up
 vagrant ssh

@@ -18,6 +18,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
+   if Vagrant.has_plugin?("vagrant-timezone")
+    config.timezone.value = "EST"
+  end
 
 
   # config.vm.network "forwarded_port", guest: 80, host: 8000
