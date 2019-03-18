@@ -76,7 +76,7 @@ def main():
     # 5.) bytes sent to source, int
     # 6.) Source/destination addresses are the same, boolean
     # 7.) Number of urgent packets, int
-    # 8.) Number of wrong fragments, int --- NO
+    # 8.) Number of wrong fragments, int --- NO ?
     # 9.) Protocol (tcp, udp, icmp), symbolic --- no
     # 10.) Both Syn & RST set (syn rst attack
     # tcpdump 'tcp[13] = 6'
