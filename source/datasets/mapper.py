@@ -3,34 +3,34 @@ import csv
 rawData = open('kddcup.data.corrected', 'r')
 reader = csv.reader(rawData, lineterminator='.')
 
-outputData0 = open('data/training0.txt', 'w', newline='')
+outputData0 = open('data/training/training0.txt', 'w', newline='')
 writer0 = csv.writer(outputData0)
 
-outputData1 = open('data/training1.txt', 'w', newline='')
+outputData1 = open('data/training/training1.txt', 'w', newline='')
 writer1 = csv.writer(outputData1)
 
-outputData2 = open('data/training2.txt', 'w', newline='')
+outputData2 = open('data/training/training2.txt', 'w', newline='')
 writer2 = csv.writer(outputData2)
 
-outputData3 = open('data/training3.txt', 'w', newline='')
+outputData3 = open('data/trainging/training3.txt', 'w', newline='')
 writer3 = csv.writer(outputData3)
 
-outputData4 = open('data/training4.txt', 'w', newline='')
+outputData4 = open('data/trainging/training4.txt', 'w', newline='')
 writer4 = csv.writer(outputData4)
 
-outputData5 = open('data/training5.txt', 'w', newline='')
+outputData5 = open('data/training/training5.txt', 'w', newline='')
 writer5 = csv.writer(outputData5)
 
-outputData6 = open('data/training6.txt', 'w', newline='')
+outputData6 = open('data/trainingtraining6.txt', 'w', newline='')
 writer6 = csv.writer(outputData6)
 
-outputData7 = open('data/training7.txt', 'w', newline='')
+outputData7 = open('data/trainging/training7.txt', 'w', newline='')
 writer7 = csv.writer(outputData7)
 
-outputData8 = open('data/training8.txt', 'w', newline='')
+outputData8 = open('data/trainingtraining8.txt', 'w', newline='')
 writer8 = csv.writer(outputData8)
 
-outputData9 = open('data/training9.txt', 'w', newline='')
+outputData9 = open('data/training/training9.txt', 'w', newline='')
 writer9 = csv.writer(outputData9)
 
 Attacks = {
