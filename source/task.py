@@ -11,4 +11,5 @@ def load_dataset(train_file, label_file):
     return dataset
 
 def load_main_data(data_dir):
+    appendFile = open("training0.txt", "a")
     
