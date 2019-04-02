@@ -10,12 +10,12 @@ def read_label(tf_bytestring):
 
 def read_session(tf_bytestring):
     session = tf.decode_raw(tf_bytestring, tf.uint8)
-    return tf.cast(session, tf.float32)/256.
+    return tf.reshape(session, [])
 
 
 def load_dataset(train_file, label_file):
-    trainDataSet = tf.data.FixedLengthRecordDataset(train_file, 1*41).map(read_session)
-    trainLabelDataSet = tf.data.FixedLengthRecordDataset(label_file, 1).map(read_label)
+    trainDataSet = tf.data.TextLineDataset(train_file).map(read_session)
+    trainLabelDataSet = tf.data.TextLineDataset(label_file).map(read_label)
     dataset = tf.data.Dataset.zip((trainDataSet, trainLabelDataSet))
     return dataset
 

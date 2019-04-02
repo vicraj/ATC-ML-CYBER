@@ -16,15 +16,14 @@ class DarpaData(object):
         #load data set into memory by chunks of 10000
         tf_dataset = tf_dataset.batch(10000)
         tf_dataset = tf_dataset.repeat(1)
-        features, labels = tf_dataset.make_one_shot_iterator().get_next()
-        if not reshape:
-            features = tf.reshape(features, [-1, 41, 1])
+        sessions, labels = tf_dataset.make_one_shot_iterator().get_next()
         if one_hot:
+            sessions = tf.one_hot(sessions, 41)
             labels = tf.one_hot(labels, 6)
         with tf.Session() as sess:
             while True:
                 try:
-                    feats, labs = sess.run([features, labels])
+                    feats, labs = sess.run([sessions, labels])
                     self.sessions = feats if self.sessions is None else np.concatenate([self.sessions, feats])
                     self.labels = labs if self.labels is None else np.concatenate([self.labels, labs])
                 except tf.errors.OutOfRangeError:
