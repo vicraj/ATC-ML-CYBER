@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 tf.enable_eager_execution()
 
 #Change to correct file location
-train_dataset_file = "/Users/blair/OneDrive/Desktop/Spring 2019/Cap Stone/IDS_MachineLearning/ATC-ML-CYBER/source/datasets/training3.txt"
+train_dataset_file = "/Users/blair/OneDrive/Desktop/Spring 2019/Cap Stone/IDS_MachineLearning/ATC-ML-CYBER/source/training3.txt"
 
 #Change to correct file location
-test_dataset_file = "/Users/blair/OneDrive/Desktop/Spring 2019/Cap Stone/IDS_MachineLearning/ATC-ML-CYBER/source/datasets/testing3.txt"
+test_dataset_file = "/Users/blair/OneDrive/Desktop/Spring 2019/Cap Stone/IDS_MachineLearning/ATC-ML-CYBER/source/testing3.txt"
 
 
 column_names = ["Duration.", "Protocol_Type.", "Service.", "Flag.", "Src_Bytes.", "Dst_Bytes", "Land.", "Wrong_Fragment.", "Urgent.", "Hot.", "Num_Failed_Logins.", "Logged_In.", "Num_Compromised.", "Root_Shell.", "Su_Attempted.", "Num_Root.", "Num_File_Creations.", "Num_Shells.", "Num_Access_Files.", "Num_Outbound_Cmds.", "Is_Host_Login.", "Is_Guest_Login.", "Count.", "Srv_Count.", "Serror_Rate.", "Srv_Serror_Rate.", "Rerror_Rate.", "Srv_Rerror_Rate.", "Same_Srv_Rate.", "Diff_Srv_Rate.", "Srv_Diff_Host_Rate", "Dst_Host_Count.", "Dst_Host_Srv_Count.", "Dst_Host_Same_Srv_Rate.", "Dst_Host_Diff_Rate.", "Dst_Host_Same_Src_Port_Rate.", "Dst_Host_Srv_Diff_Host_Rate.", "Dst_Host_Serror_Rate.", "Dst_Host_Srv_Serror_Rate.", "Dst_Host_Rerror_Rate.", "Dst_Host_Srv_Rerror_Rate.", "attacks"]
