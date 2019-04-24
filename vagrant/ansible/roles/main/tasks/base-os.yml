@@ -29,3 +29,4 @@
     - open-vm-tools
     - python-pip
     - python3-pip
+    - wireshark

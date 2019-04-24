@@ -18,5 +18,4 @@
       - IPython
       - sklearn
       - dpkt
-      - wireshark
     executable: pip3
