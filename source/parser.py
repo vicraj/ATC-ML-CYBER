@@ -24,7 +24,11 @@ def get_valid_filename(s):
     return re.sub(r'(?u)[^-\w.]', '', s)
 
 def main():
-    df = pd.read_csv('tcpdump.list', delim_whitespace=True)
+    metadata_file_name = '../sample_data/wednesday/tcpdump.list'
+    pcap_file_name = '../sample_data/wednesday/outside.tcpdump'
+
+    # metadata_file_name = 'tcpdump.list'
+    df = pd.read_csv(metadata_file_name, delim_whitespace=True)
 
     # Get unique attack names and display for our script purposes
     print('Available attacks names:\n')
@@ -50,8 +54,9 @@ def main():
 
         #editcap -v  -A "1998-01-23 16:03:52" -B "1998-01-23 16:03:58"  sample_data01.tcpdump /dev/null
         file_name = "%s_%s.pcap" % (row['id'], row['attack_name'])
+        file_name = "%s.pcap" % (row['id'])
         file_name = get_valid_filename(file_name)
-        command = ("editcap -A \"%s\" -B \"%s\"  sample_data01.tcpdump output/%s") % (datetime_start, datetime_end, file_name)
+        command = ("editcap -A \"%s\" -B \"%s\"  %s output/%s") % (datetime_start, datetime_end, pcap_file_name,file_name)
 
         #print(command)
 

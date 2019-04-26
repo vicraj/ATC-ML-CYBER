@@ -11,6 +11,7 @@ import pandas as pd
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+
 from IPython.display import display, HTML
 import sys
 import pytz
@@ -56,7 +57,7 @@ def get_event_by_timestamp(dt_timestamp, metadata_list):
     return None
 
 
-def extract_packet_data(pcap, event_metadata):
+def extract_packet_data(event_metadata):
     """Print out information about each packet in a pcap
 
        Args:
@@ -72,6 +73,7 @@ def extract_packet_data(pcap, event_metadata):
              ...
              },....]
     """
+
     # print('Starting to parse EVENT...')
     # print('Events to be considered(From Metadata): %s' % len(metadata_list))
     # For each packet in the pcap process the contents
@@ -80,7 +82,7 @@ def extract_packet_data(pcap, event_metadata):
     event_end = event_metadata['end']
     event_id = event_metadata['id']
     attack_name = event_metadata['attack_name']
-    print("Processing event", event_id)
+    # print("Processing event", event_id)
 
     csv_metadata = {'duration': event_metadata['duration'],
                     'service': event_metadata['service'],
@@ -92,10 +94,14 @@ def extract_packet_data(pcap, event_metadata):
                     'num_ack_flag': 0,
                     'num_urg_flag': 0,
                     'num_ece_flag': 0,
-                    'num_cwr_flag': 0
+                    'num_cwr_flag': 0,
+                    'num_do_not_fragment': 0,
+                    'num_more_fragments': 0
                     }
 
-    for timestamp, buf in pcap:
+    global num_processed
+    global filedata
+    for timestamp, buf in filedata.items():
         current_timestamp = datetime.utcfromtimestamp(timestamp)
 
         if current_timestamp < event_start:
@@ -141,6 +147,11 @@ def extract_packet_data(pcap, event_metadata):
             csv_metadata['num_ece_flag'] += (1 if (tcp.flags & dpkt.tcp.TH_ECE)  != 0 else 0)
             csv_metadata['num_cwr_flag'] += (1 if (tcp.flags & dpkt.tcp.TH_CWR)  != 0 else 0)
 
+            csv_metadata['num_do_not_fragment'] += (1 if do_not_fragment != 0 else 0)
+            csv_metadata['num_more_fragments'] += (1 if more_fragments != 0 else 0)
+            # print ("Packet is urgent")
+            # print(urg_flag)
+
 
         # print (csv_metadata)
         # Print out the info
@@ -149,6 +160,13 @@ def extract_packet_data(pcap, event_metadata):
         if current_timestamp > event_end:
             break
 
+    num_processed += 1
+    global num_events
+
+
+
+
+    print("Processed", "{:3.4f}".format((num_processed / num_events) * 100), "% (", num_processed, "of", num_events,")")
     return csv_metadata
 
 
@@ -222,10 +240,23 @@ def generate_attack_collection(file_name):
     print('Done.')
     return metadata
 
-def parse_pcap_and_extract_data(event_metadata, file_name):
+
+def load_pcap_into_ram(file_name):
+    global filedata
+    global num_processed
+
+    num_processed = 0
+    filedata = {}
     with open(file_name, 'rb') as f:
         pcap = dpkt.pcap.Reader(f)
-        return extract_packet_data(pcap, event_metadata)
+        for timestamp, buf in pcap:
+            filedata[timestamp] = buf
+
+
+# def parse_pcap_and_extract_data(event_metadata, file_name):
+#     with open(file_name, 'rb') as f:
+#         pcap = dpkt.pcap.Reader(f)
+#         return extract_packet_data(pcap, event_metadata)
 
 
 def test():
@@ -237,6 +268,7 @@ def test():
 
     metadata_list = generate_attack_collection(metadata_file_name)
 
+    load_pcap_into_ram(pcap_file_name)
     # for event_metadata in metadata_list:
     #
     #     """Open up a test pcap file and print out the packets"""
@@ -246,11 +278,13 @@ def test():
     #         extract_packet_data(pcap, event_metadata)
 
     print("Threads start....")
-    pool = ThreadPool(8)
+    pool = ThreadPool(16)
     file_names  = [pcap_file_name] * len(metadata_list)
+    global num_events
+    num_events = len(metadata_list)
     # We need to zip together the two lists because map only supports calling functions
     # with one argument. In Python 3.3+, you can use starmap instead.
-    results = pool.starmap(parse_pcap_and_extract_data, zip(metadata_list, file_names))
+    results = pool.starmap(extract_packet_data, zip(metadata_list))
 
     # print results
     # print(results)
