@@ -168,7 +168,7 @@ def extract_packet_data(event_metadata):
     return csv_metadata
 
 
-def generate_attack_collection(file_name):
+def generate_attack_collection(file_name, timezone):
     """
     This method generates a python list of metadata for the attacks to be consumed by the PCAP parser.
     :param file_name:
@@ -205,7 +205,7 @@ def generate_attack_collection(file_name):
         #
 
         # Hardcode ETC since that's what metadata comes in
-        time_string = ("%s GMT-0500") % (row['time'])
+        time_string = ("%s %s") % (row['time'], timezone)
         # print(time_string)
         # print(row['date'])
         datetime_start = datetime.strptime(("%s %s") % (row['date'], time_string), '%m/%d/%Y %H:%M:%S GMT%z')
@@ -240,6 +240,11 @@ def generate_attack_collection(file_name):
 
 
 def load_pcap_into_ram(file_name):
+    """
+    This method loads the pcap into a dictionary for faster processing.
+    :param file_name:
+    :return: This method doesn't return anything, just puts file into a global dictionary
+    """
     global filedata
     global num_processed
 
@@ -251,58 +256,62 @@ def load_pcap_into_ram(file_name):
             filedata[timestamp] = buf
 
 
-# def parse_pcap_and_extract_data(event_metadata, file_name):
-#     with open(file_name, 'rb') as f:
-#         pcap = dpkt.pcap.Reader(f)
-#         return extract_packet_data(pcap, event_metadata)
+def parse(metadata_file_name, pcap_file_name, threads, output_csv_file_name, output_html_file_name, timezone):
+    """
+    Main controller method that dispatches tasks
+    :param metadata_file_name:
+    :param pcap_file_name:
+    :param threads:
+    :param output_csv_file_name:
+    :param output_html_file_name:
+    :return: nothing
+    """
 
-
-def parse(metadata_file_name, pcap_file_name, threads):
-    # metadata_file_name = '../sample_data/wednesday/tcpdump.list'
-    # pcap_file_name = '../sample_data/wednesday/outside.tcpdump'
-
-    metadata_list = generate_attack_collection(metadata_file_name)
-
-    load_pcap_into_ram(pcap_file_name)
-    # for event_metadata in metadata_list:
-    #
-    #     """Open up a test pcap file and print out the packets"""
-    #     # with open('../sample_data/sample_data01.tcpdump', 'rb') as f:
-    #     with open('sample_data01.tcpdump', 'rb') as f:
-    #         pcap = dpkt.pcap.Reader(f)
-    #         extract_packet_data(pcap, event_metadata)
-
-    print("Threads start....")
-    pool = ThreadPool(threads)
-    file_names  = [pcap_file_name] * len(metadata_list)
     global num_events
+
+    "Generate attack collection metadata"
+    metadata_list = generate_attack_collection(metadata_file_name, timezone)
+    "Load PCAP into memory"
+    load_pcap_into_ram(pcap_file_name)
+
+    print("Multi-threaded processing: Begin")
+
+    pool = ThreadPool(threads)
     num_events = len(metadata_list)
-    # We need to zip together the two lists because map only supports calling functions
-    # with one argument. In Python 3.3+, you can use starmap instead.
     results = pool.starmap(extract_packet_data, zip(metadata_list))
 
-    # print results
-    # print(results)
     pool.close()
     pool.join()
 
-    print("Wrinting CSV")
-    for result in results:
-        print(result)
+    print("Multi-threaded processing: End")
 
     df = pd.DataFrame(results)
-    df.to_csv("output.csv")
 
-    print("The end.")
+    print("\n")
+    print("Wrinting CSV to", output_csv_file_name)
+    df.to_csv(output_csv_file_name)
+
+    print("Writing HTML to", output_html_file_name)
+    df.to_html(output_html_file_name)
+
+    print("We are done!")
+
+
 if __name__ == '__main__':
     # metadata_file_name = '../sample_data/tcpdump.list'
     # pcap_file_name = 'sample_data01.tcpdump'
 
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--verbosity', type=int, help='Verbosity level. ex. --verbosity=1')
     parser.add_argument('--metadata', help='Metadata file to use ex. --metadata=tcpdump.list', required=True)
     parser.add_argument('--pcap', help='PCAP file to use ex. --pcap=sample_data01.tcpdump', required=True)
-    parser.add_argument('--threads', default=4, type=int, help='Number of threads to use --threads=4')
+    parser.add_argument('--threads', default=8, type=int, help='Number of threads to use --threads=8')
+    parser.add_argument('--csv', default="output/output.csv", help='CSV Filename to output --csv=output/output.csv')
+    parser.add_argument('--html', default="output/output.html", help='HTML Filename to output --html=output/output.html')
+    parser.add_argument('--tz', default="GMT-0500", help='Timezone of the metadata file --tz="GMT-0500')
+
+
+    # metadata_file_name = '../sample_data/wednesday/tcpdump.list'
+    # pcap_file_name = '../sample_data/wednesday/outside.tcpdump'
 
     args = parser.parse_args()
-    parse(args.metadata, args.pcap, args.threads)
+    parse(args.metadata, args.pcap, args.threads, args.csv, args.html, args.tz)
