@@ -8,7 +8,7 @@ as organizer.py at execution to work correctly.
 
 This file went through several rounds of development.
 
-See staticData.md for more details
+See README for more details
 """
 
 import csv
