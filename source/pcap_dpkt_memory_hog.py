@@ -1,8 +1,9 @@
-
+#! /usr/bin/python3
 """
 Use DPKT to read in a pcap file and print out the contents of the packets
 This example is focused on the fields in the Ethernet Frame and IP packet
 """
+import argparse, sys
 import dpkt
 import datetime
 import socket
@@ -10,11 +11,8 @@ from dpkt.compat import compat_ord
 import pandas as pd
 from datetime import datetime
 from datetime import timedelta
-from datetime import timezone
 
 from IPython.display import display, HTML
-import sys
-import pytz
 from multiprocessing.pool import ThreadPool
 
 
@@ -259,12 +257,9 @@ def load_pcap_into_ram(file_name):
 #         return extract_packet_data(pcap, event_metadata)
 
 
-def test():
-    metadata_file_name = '../sample_data/tcpdump.list'
-    pcap_file_name = 'sample_data01.tcpdump'
-
-    metadata_file_name = '../sample_data/wednesday/tcpdump.list'
-    pcap_file_name = '../sample_data/wednesday/outside.tcpdump'
+def parse(metadata_file_name, pcap_file_name, threads):
+    # metadata_file_name = '../sample_data/wednesday/tcpdump.list'
+    # pcap_file_name = '../sample_data/wednesday/outside.tcpdump'
 
     metadata_list = generate_attack_collection(metadata_file_name)
 
@@ -278,7 +273,7 @@ def test():
     #         extract_packet_data(pcap, event_metadata)
 
     print("Threads start....")
-    pool = ThreadPool(16)
+    pool = ThreadPool(threads)
     file_names  = [pcap_file_name] * len(metadata_list)
     global num_events
     num_events = len(metadata_list)
@@ -296,8 +291,18 @@ def test():
         print(result)
 
     df = pd.DataFrame(results)
-    df.to_csv("test.csv")
+    df.to_csv("output.csv")
 
     print("The end.")
 if __name__ == '__main__':
-    test()
+    # metadata_file_name = '../sample_data/tcpdump.list'
+    # pcap_file_name = 'sample_data01.tcpdump'
+
+    parser = argparse.ArgumentParser()
+    # parser.add_argument('--verbosity', type=int, help='Verbosity level. ex. --verbosity=1')
+    parser.add_argument('--metadata', help='Metadata file to use ex. --metadata=tcpdump.list', required=True)
+    parser.add_argument('--pcap', help='PCAP file to use ex. --pcap=sample_data01.tcpdump', required=True)
+    parser.add_argument('--threads', default=4, type=int, help='Number of threads to use --threads=4')
+
+    args = parser.parse_args()
+    parse(args.metadata, args.pcap, args.threads)
