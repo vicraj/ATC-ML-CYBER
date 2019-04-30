@@ -9,6 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.synced_folder ".", "/vagrant"
   config.vm.synced_folder "../source", "/home/vagrant/source"
+  config.vm.synced_folder "../sample_data", "/home/vagrant/sample_data"
 
   config.vm.provider :virtualbox do |v|
     #debug v.gui = true

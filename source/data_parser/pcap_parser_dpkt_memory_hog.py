@@ -162,11 +162,12 @@ def generate_attack_collection(file_name, timezone):
     df_attacks = df[['attack_name']].drop_duplicates()
     display(df_attacks)
 
-    # Get only port scans
+    # Get only port scans, if needed uncomment below
     df2 = df  # .loc[df['service'] == "telnet"]
 
     # Output this table into an html file.
-    df2.to_html('filename.html')
+    # DEBUG
+    #df2.to_html('filename.html')
 
     metadata = []
 
