@@ -7,7 +7,7 @@ on numeric data
 This file requires that the 'kddcup.data.corrected' is in the
 same directory as this file at execution.
 
-See staticData.md for more details
+See README for more details
 """
 
 import csv
