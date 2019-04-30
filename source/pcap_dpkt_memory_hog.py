@@ -1,9 +1,8 @@
 #! /usr/bin/python3
 """
-Use DPKT to read in a pcap file and print out the contents of the packets
-This example is focused on the fields in the Ethernet Frame and IP packet
+Use DPKT to read in a pcap & metadata and output a CSV file correlating the events.
 """
-import argparse, sys
+import argparse
 import dpkt
 import datetime
 import socket
@@ -27,7 +26,6 @@ def mac_addr(address):
     return ':'.join('%02x' % compat_ord(b) for b in address)
 
 
-
 def inet_to_str(inet):
     """Convert inet object to a string
 
@@ -42,24 +40,11 @@ def inet_to_str(inet):
     except ValueError:
         return socket.inet_ntop(socket.AF_INET6, inet)
 
-def get_event_by_timestamp(dt_timestamp, metadata_list):
-    for event_metadata in metadata_list:
-        event_start = event_metadata['start']
-        event_end = event_metadata['end']
-        event_id = event_metadata['id']
-        attack_name = event_metadata['attack_name']
-
-        if dt_timestamp >= event_start and dt_timestamp <= event_end and attack_name != '-':
-            return event_metadata
-
-    return None
-
 
 def extract_packet_data(event_metadata):
     """Print out information about each packet in a pcap
 
        Args:
-           pcap: dpkt pcap reader object (dpkt.pcap.Reader)
            event_metadata: python list collection of dictionary objects containing metadata in the following format:
            [{'id': id,
              'start': datetime_start,
@@ -72,15 +57,15 @@ def extract_packet_data(event_metadata):
              },....]
     """
 
-    # print('Starting to parse EVENT...')
-    # print('Events to be considered(From Metadata): %s' % len(metadata_list))
+    global num_processed
+    global filedata
+    global num_events
+
     # For each packet in the pcap process the contents
 
     event_start = event_metadata['start']
     event_end = event_metadata['end']
-    event_id = event_metadata['id']
-    attack_name = event_metadata['attack_name']
-    # print("Processing event", event_id)
+    # event_id = event_metadata['id']
 
     csv_metadata = {'duration': event_metadata['duration'],
                     'service': event_metadata['service'],
@@ -97,22 +82,14 @@ def extract_packet_data(event_metadata):
                     'num_more_fragments': 0
                     }
 
-    global num_processed
-    global filedata
     for timestamp, buf in filedata.items():
         current_timestamp = datetime.utcfromtimestamp(timestamp)
 
         if current_timestamp < event_start:
             continue
 
-        event_start = event_metadata['start']
-        event_end = event_metadata['end']
-        event_id = event_metadata['id']
-
-        # print("Processing event: ", event_id)
-        # Print out the timestamp in UTC
-        #print('Timestamp: ', str(datetime.utcfromtimestamp(timestamp)))
-
+        # For DEBUGGING
+        # print('Timestamp: ', str(datetime.utcfromtimestamp(timestamp)))
 
         # Unpack the Ethernet frame (mac src/dst, ethertype)
         eth = dpkt.ethernet.Ethernet(buf)
@@ -147,11 +124,9 @@ def extract_packet_data(event_metadata):
 
             csv_metadata['num_do_not_fragment'] += (1 if do_not_fragment != 0 else 0)
             csv_metadata['num_more_fragments'] += (1 if more_fragments != 0 else 0)
-            # print ("Packet is urgent")
-            # print(urg_flag)
 
 
-        # print (csv_metadata)
+        # FOR FUTURE DEBUGGING
         # Print out the info
         # print('IP: %s -> %s   (len=%d ttl=%d DF=%d MF=%d offset=%d)\n' % \
         #       (inet_to_str(ip.src), inet_to_str(ip.dst), ip.len, ip.ttl, do_not_fragment, more_fragments, fragment_offset))
@@ -159,9 +134,6 @@ def extract_packet_data(event_metadata):
             break
 
     num_processed += 1
-    global num_events
-
-
 
 
     print("Processed", "{:3.4f}".format((num_processed / num_events) * 100), "% (", num_processed, "of", num_events,")")
@@ -288,7 +260,7 @@ def parse(metadata_file_name, pcap_file_name, threads, output_csv_file_name, out
     df = pd.DataFrame(results)
 
     print("\n")
-    print("Wrinting CSV to", output_csv_file_name)
+    print("Writing CSV to", output_csv_file_name)
     df.to_csv(output_csv_file_name)
 
     print("Writing HTML to", output_html_file_name)
@@ -298,9 +270,6 @@ def parse(metadata_file_name, pcap_file_name, threads, output_csv_file_name, out
 
 
 if __name__ == '__main__':
-    # metadata_file_name = '../sample_data/tcpdump.list'
-    # pcap_file_name = 'sample_data01.tcpdump'
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--metadata', help='Metadata file to use ex. --metadata=tcpdump.list', required=True)
     parser.add_argument('--pcap', help='PCAP file to use ex. --pcap=sample_data01.tcpdump', required=True)
