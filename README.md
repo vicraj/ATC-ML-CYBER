@@ -2,8 +2,8 @@
 
 
 **Authors**
-- Igor Mekhtiev
-- Blair Panek
+- Igor Mekthiev
+- Blair Panic
 - San Boyar
 - Devonte Ball
 
