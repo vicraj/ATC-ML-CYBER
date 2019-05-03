@@ -1,5 +1,7 @@
 Guide in order to manipulate machine learning script.
 
+Guide Based On: https://www.tensorflow.org/tutorials/eager/custom_training_walkthrough
+
 How to Run:
 
 1. Download from Github
