@@ -1,15 +1,11 @@
 # Computer Science 445 – Capstone Sprint 2019
 
 
-| Branch  | Status |
-| ------------- | ------------- |
-| Develop  | TODO  |
-| Master  | TODO |
-
-
-
 **Authors**
 - Igor Mekhtiev
+- Blair Panek
+- San Boyar
+- Devonte Ball
 
 # Installation Instructions
 
@@ -61,6 +57,6 @@ vagrant destroy
 ```
 
 
-# Change log since last sprint
+# Please refer to individual folders for detailed execution information
 
-* Created vagrant box
+
