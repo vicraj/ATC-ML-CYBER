@@ -1,6 +1,10 @@
 Guide in order to manipulate machine learning script.
 
-First make sure that the location of the training and testing data sets are correct corresponding to your instance via your download location.
+How to Run:
+
+1. Download from Github
+2. First make sure that the location of the training and testing data sets are correct corresponding to your instance via your download       location. (MLScript.py file)
+3. Run using PyCharm.
 
 Alterations:
 
