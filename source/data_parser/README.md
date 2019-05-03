@@ -29,7 +29,7 @@ Contains the output files `csv` and `html` representation of feature set.
 The main functional parser script, based off `pcap_dpkt.py` uses threads and loads PCAP into mamory to speed up the process.
 
 *Note: this script performance can significantly be improved by creating a separate indexing array on truncated dates and using isplit to seek to needed timestamp in the main pcap loop*
-##### Description of parameters
+#### Description of parameters
 ```
 usage: pcap_parser_dpkt_memory_hog.py [-h] --metadata METADATA --pcap PCAP
                                       [--threads THREADS] [--csv CSV]
@@ -44,12 +44,13 @@ optional arguments:
   --html HTML          HTML Filename to output --html=output/output.html
   --tz TZ              Timezone of the metadata file --tz="GMT-0500"
 ```
-##### How to run
+#### How to run
 From the VM
 
 ```
 vagrant@debian9:~$ cd source/data_parser/
-./pcap_parser_dpkt_memory_hog.py --metadata="../../sample_data/small/tcpdump.list" --pcap="../../sample_data/small/sample_data01.tcpdump" --tz="GMT-0500"
+
+vagrant@debian9:~$./pcap_parser_dpkt_memory_hog.py --metadata="../../sample_data/small/tcpdump.list" --pcap="../../sample_data/small/sample_data01.tcpdump" --tz="GMT-0500"
 ```
 
 
