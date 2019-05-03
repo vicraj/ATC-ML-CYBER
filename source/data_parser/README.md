@@ -29,6 +29,11 @@ Contains the output files `csv` and `html` representation of feature set.
 The main functional parser script, based off `pcap_dpkt.py` uses threads and loads PCAP into mamory to speed up the process.
 
 *Note: this script performance can significantly be improved by creating a separate indexing array on truncated dates and using isplit to seek to needed timestamp in the main pcap loop*
+
+**In order to run this script on large datasets such as weekly ones from DARPA:**
+*  Copy and paste header row from sample data file provided by darpa
+*  Fix the dates by making sure they are in this format MM/DD/YYYY - it seems their timestamps are inconsistent
+
 #### Description of parameters
 ```
 usage: pcap_parser_dpkt_memory_hog.py [-h] --metadata METADATA --pcap PCAP
@@ -55,7 +60,13 @@ vagrant@debian9:~$./pcap_parser_dpkt_memory_hog.py --metadata="../../sample_data
 
 
 
-pcap_splitter.py	
+`pcap_splitter.py`
+
+This script will split large `PCAP` file into smaller ones using editcap tool from wireshark suite. 
+
+*Important notes:* 
+* it uses system system timezone (hardcoded in vagrant file to ETC) because list file contains no timezone information.
+* Uses multiple threads
 
 
 ### KDD Cup 1999 Datasets
