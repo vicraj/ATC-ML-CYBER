@@ -1,22 +1,63 @@
 ### Data Parsing Scripts
 
+### 1998 DARPA INTRUSION DETECTION EVALUATION DATASET
 
+`alternatives/` 
 
-alternatives/
+*folder contains parser scripts that didn't quite cut it for performance purposes or other problems.*
 
+`pcap.py`
 
-output/
+*Simply takes a pcap file and outputs some statistics (uses dpkt library)*
 
+`pcap_dpkt.py`
 
+*Is the script the current version of the parse is based on but has a limitation of being slow due to the fact that dpkt library is reading **pcap** data from the hard drive and its performance is inadequate when running on the large files.*
 
+This script takes the metadata from the `.list` file correllates it with data in `.tcpdump` file and outputs a `.csv` with features. For every event found in the `.list` it looks through pcap file, due to inability of dpkt library to seek. Multiple threads are used.
 
-pcap_parser_dpkt_memory_hog.py	
+`pcap_dpkt_reverse.py`
+
+Almost the same as `pcap_dpkt.py` except for every packet parsed we try to find events related to each packet. Faster but still not good enough.
+
+`output/`
+
+Contains the output files `csv` and `html` representation of feature set.
+
+`pcap_parser_dpkt_memory_hog.py`
+
+The main functional parser script, based off `pcap_dpkt.py` uses threads and loads PCAP into mamory to speed up the process.
+
+*Note: this script performance can significantly be improved by creating a separate indexing array on truncated dates and using isplit to seek to needed timestamp in the main pcap loop*
+##### Description of parameters
+```
+usage: pcap_parser_dpkt_memory_hog.py [-h] --metadata METADATA --pcap PCAP
+                                      [--threads THREADS] [--csv CSV]
+                                      [--html HTML] [--tz TZ]
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --metadata METADATA  Metadata file to use ex. --metadata=tcpdump.list
+  --pcap PCAP          PCAP file to use ex. --pcap=sample_data01.tcpdump
+  --threads THREADS    Number of threads to use --threads=8
+  --csv CSV            CSV Filename to output --csv=output/output.csv
+  --html HTML          HTML Filename to output --html=output/output.html
+  --tz TZ              Timezone of the metadata file --tz="GMT-0500"
+```
+##### How to run
+From the VM
+
+```
+vagrant@debian9:~$ cd source/data_parser/
+./pcap_parser_dpkt_memory_hog.py --metadata="../../sample_data/small/tcpdump.list" --pcap="../../sample_data/small/sample_data01.tcpdump" --tz="GMT-0500"
+```
+
 
 
 pcap_splitter.py	
 
 
-
+### KDD Cup 1999 Datasets
 #### organizer.py      
 ##### Description
 In order to generate a full list of the attack types, flag types, protocol 
